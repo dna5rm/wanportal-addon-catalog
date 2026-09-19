@@ -1,0 +1,11 @@
+.env
+.env.*
+*.env
+config.php
+**/config.php
+!config.php.example
+data/*.sqlite
+data/*.sqlite.bak
+data/*.bak
+docker-compose.override.yml
+docker-compose.override.yaml

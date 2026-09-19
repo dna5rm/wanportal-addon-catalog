@@ -1,0 +1,146 @@
+/*
+ * catalog sidecar page styles: layout only; every color token rides
+ * the chrome (src/chrome.php) variables so light/dark both work.
+ */
+
+/* --- header bar right side (filter, actions, auth note) --- */
+.bar-right {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    font-size: 12px;
+}
+.bar-right input[type="text"] {
+    min-width: 220px;
+}
+.auth-note { color: var(--muted); }
+.sku-id { color: var(--muted); font-size: 13px; letter-spacing: .3px; }
+.muted { color: var(--muted); }
+
+/* --- listing tree --- */
+.sku-cell { white-space: nowrap; }
+.tree-indent { display: inline-block; }
+.tree-branch { color: var(--muted); margin-right: 4px; }
+td.nowrap, th.nowrap { white-space: nowrap; }
+.lands { color: var(--text); }
+.chip {
+    display: inline-block;
+    padding: 1px 8px;
+    border-radius: 999px;
+    border: 1px solid var(--panel-edge);
+    font-size: 11px;
+    color: var(--text);
+    background: var(--hover);
+}
+.chip.poc { border-color: var(--warn); color: var(--warn); }
+.chip.legacy, .chip.retired { color: var(--muted); }
+
+/* --- inline doc-url editor (row cell, logged in only) --- */
+.docset { display: inline-flex; gap: 4px; align-items: center; }
+.docset input { width: 200px; font-size: 12px; padding: 2px 6px; }
+.rowbtns { display: inline-flex; gap: 4px; white-space: nowrap; }
+
+/* --- detail page --- */
+dl.detail {
+    display: grid;
+    grid-template-columns: 170px minmax(0, 1fr) 170px minmax(0, 1fr);
+    gap: 8px 14px;
+    margin: 0;
+}
+dl.detail dt { color: var(--muted); font-size: 12px; padding-top: 2px; }
+dl.detail dd { margin: 0; min-width: 0; overflow-wrap: anywhere; }
+dl.detail .wide { grid-column: 2 / -1; }
+dl.detail pre {
+    margin: 0;
+    font-size: 12px;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+}
+
+/* --- forms (sku edit, admin rows) --- */
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px 14px;
+    margin-top: 10px;
+}
+.form-grid .span2 { grid-column: 1 / -1; }
+.flabel {
+    display: block;
+    font-size: 12px;
+    color: var(--muted);
+    margin-bottom: 3px;
+}
+.field .form-control, .field .form-select { width: 100%; }
+textarea.form-control { min-height: 64px; resize: vertical; }
+.idpreview { font-size: 12px; color: var(--muted); margin-top: 8px; }
+.errline {
+    color: var(--danger);
+    font-size: 12px;
+    margin-top: 8px;
+    display: none;
+}
+.errline.show { display: block; }
+
+/* --- admin panels --- */
+.admin-add { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; }
+.admin-add input { width: 130px; font-size: 12px; }
+.admin-add input.c-sort { width: 60px; }
+table.table td, table.table th { vertical-align: middle; }
+td.cell-actions { white-space: nowrap; text-align: right; }
+
+/* --- dialog (delete confirms) --- */
+dialog.catdlg {
+    background: var(--panel);
+    color: var(--text);
+    border: 1px solid var(--panel-edge);
+    border-radius: 8px;
+    padding: 14px;
+    width: min(500px, 90vw);
+    box-shadow: var(--shadow);
+}
+dialog.catdlg::backdrop { background: rgba(0, 0, 0, .45); }
+.catdlg h3 { margin: 0 0 8px; font-size: 15px; }
+.dlg-body { font-size: 13px; }
+.dlg-body .warnline { color: var(--warn); }
+.dlg-require {
+    margin-top: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    font-size: 12px;
+    color: var(--muted);
+}
+.dlg-row { margin-top: 14px; display: flex; justify-content: flex-end; gap: 8px; }
+
+/* --- toasts --- */
+.toastbox {
+    position: fixed;
+    right: 16px;
+    bottom: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    z-index: 60;
+}
+.toastline {
+    background: var(--panel);
+    border: 1px solid var(--panel-edge);
+    color: var(--text);
+    border-radius: 6px;
+    padding: 6px 10px;
+    font-size: 12px;
+    box-shadow: var(--shadow);
+    transition: opacity .6s ease;
+    max-width: 420px;
+}
+.toastline.err { border-color: var(--danger); color: var(--danger); }
+.toastline.gone { opacity: 0; }
+
+/* --- auth gating: editing controls exist in markup but stay hidden
+ * until catalog.js confirms a signed-in portal session --- */
+.needs-auth { display: none !important; }
+body.authed .needs-auth { display: revert !important; }
+body.authed td.needs-auth { display: table-cell !important; }
+body.authed th.needs-auth { display: table-cell !important; }
