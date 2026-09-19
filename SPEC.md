@@ -57,7 +57,7 @@ keeps its ancestors visible even when the parent row text misses.
 ## Chrome
 app/src/chrome.php provides head/topnav/foot under wanportal_addon_*,
 nb_chrome_*, chrome_* and bare aliases, all function_exists-guarded so
-any caller can require it as-is. Topnav: Home + Catalog + Admin, no
+any caller can require it as-is. Topnav: Dashboard + Catalog + Admin, no
 other sidecar links. Footer: wanportal · catalog sidecar. embed=1
 hides the topnav; theme tokens and the postMessage/storage theme
 follow stay. No target=_blank anywhere.

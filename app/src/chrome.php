@@ -164,7 +164,7 @@ JS;
             return;
         }
         $links = [
-            'home'    => ['/',                    'Home'],
+            'home'    => ['/',                    'Dashboard'],
             'catalog' => ['/catalog/',            'Catalog'],
             'admin'   => ['/catalog/admin.php',   'Admin'],
         ];
