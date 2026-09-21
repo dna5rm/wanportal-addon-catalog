@@ -25,19 +25,24 @@ old id stops resolving.
 
 ## Run it
 
-The service is defined in /srv/wanportal/docker-compose.override.yml.
-Build and start from /srv/wanportal, not from this directory:
+Define the service in the portal compose override. Build and start from
+the portal directory, not this one:
 
-    cd /srv/wanportal
-    docker compose build wanportal-addon-catalog
-    docker compose up -d wanportal-addon-catalog
+    cd /path/to/wanportal
+    docker compose up --build -d wanportal-addon-catalog
+    docker exec wanportal /usr/sbin/httpd -k graceful
 
 The core Apache proxies /catalog/ to the container (see
-conf/addons-proxy.conf); the sidecar publishes no host port of its
-own:
+conf/addons-proxy.conf); the sidecar publishes no host port:
 
-    curl -f http://127.0.0.1:3385/catalog/                                # UI through the proxy
-    docker exec wanportal-addon-catalog curl -sf http://localhost/health  # container healthcheck
+    curl -f http://127.0.0.1:3385/catalog/
+    docker exec wanportal-addon-catalog curl -sf http://localhost/health
+
+Create a host `data/` directory and mount it at `/var/lib/catalog`.
+The container apache user must be able to write it.
+
+Do not run `docker compose up` from this directory: it conflicts with
+the portal project name and creates a stray default network.
 
 ## Data and backups
 
