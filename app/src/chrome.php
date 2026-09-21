@@ -20,7 +20,7 @@
  *     visitor's choice rides the SPA's 'wanportal-theme' localStorage key,
  *     applied pre-paint to data-theme AND data-bs-theme on <html>, and
  *     followed live via postMessage and the storage event
- *   - logo /assets/logo.png
+ *   - logo from portal /config.json (empty = text brand; fetch fail = /assets/logo.png)
  *   - SPA .btn/.bar chrome: one uniform button face for .btn and every
  *     Bootstrap variant used in sidecar markup (a.btn is a button, never
  *     a link), .bar / .bar-title h1 header from base.css, no underline on
@@ -55,6 +55,40 @@ if (!function_exists('nb_chrome_head')) {
     function nb_chrome_embed(): bool
     {
         return defined('WANPORTAL_ADDON_CHROME_EMBED') && WANPORTAL_ADDON_CHROME_EMBED;
+    }
+
+    /**
+     * Brand mark for the sidecar topnav. Matches the SPA: GET /config.json
+     * `logo` (same-origin on the portal). Non-empty string → <img>; empty
+     * → text "wanportal". Fetch is 1s, no cookies. On transport failure
+     * keep /assets/logo.png so a down portal does not blank the bar.
+     */
+    function catalog_chrome_brand_html(): string
+    {
+        $logo = null;
+        if (function_exists('curl_init')) {
+            $ch = curl_init('http://wanportal/config.json');
+            curl_setopt_array($ch, [
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_CONNECTTIMEOUT => 1,
+                CURLOPT_TIMEOUT        => 1,
+                CURLOPT_HTTPHEADER     => ['Accept: application/json'],
+            ]);
+            $body = curl_exec($ch);
+            $code = (int) curl_getinfo($ch, CURLINFO_HTTP_CODE);
+            curl_close($ch);
+            if (is_string($body) && $code === 200) {
+                $data = json_decode($body, true);
+                if (is_array($data) && array_key_exists('logo', $data)) {
+                    $logo = is_string($data['logo']) ? trim($data['logo']) : '';
+                }
+            }
+        }
+        if ($logo === '') {
+            return '<a class="brand" href="/">wanportal</a>';
+        }
+        $src = htmlspecialchars(($logo === null) ? '/assets/logo.png' : $logo, ENT_QUOTES, 'UTF-8');
+        return '<a class="brand" href="/"><img class="brand-logo" src="' . $src . '" alt="wanportal"></a>';
     }
 
     /**
@@ -170,7 +204,7 @@ JS;
         ];
 
         echo "<nav class=\"topnav\">\n";
-        echo "  <a class=\"brand\" href=\"/\"><img class=\"brand-logo\" src=\"/assets/logo.png\" alt=\"wanportal\"></a>\n";
+        echo '  ', catalog_chrome_brand_html(), "\n";
         foreach ($links as $key => [$href, $label]) {
             $isActive = ($active === $key || $active === $href);
             $cls      = $isActive ? 'nav-link active' : 'nav-link';
